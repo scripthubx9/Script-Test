@@ -1,0 +1,147 @@
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+-- Janela
+local Window = Rayfield:CreateWindow({
+   Name = "Sistema Completo",
+   LoadingTitle = "Carregando Script...",
+   LoadingSubtitle = "by Você",
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = "SistemaScript",
+      FileName = "Config"
+   }
+})
+
+-- =========================
+-- ABA PLAYER
+-- =========================
+local PlayerTab = Window:CreateTab("Player", 4483362458)
+
+local speed = 16
+local savedPosition = nil
+
+-- Slider de velocidade
+PlayerTab:CreateSlider({
+   Name = "Velocidade",
+   Range = {16, 150},
+   Increment = 1,
+   Suffix = "Speed",
+   CurrentValue = 16,
+   Callback = function(Value)
+      speed = Value
+      local player = game.Players.LocalPlayer
+      if player.Character and player.Character:FindFirstChild("Humanoid") then
+         player.Character.Humanoid.WalkSpeed = speed
+      end
+   end,
+})
+
+-- Botão resetar velocidade
+PlayerTab:CreateButton({
+   Name = "Resetar Velocidade",
+   Callback = function()
+      speed = 16
+      local player = game.Players.LocalPlayer
+      if player.Character and player.Character:FindFirstChild("Humanoid") then
+         player.Character.Humanoid.WalkSpeed = 16
+      end
+   end,
+})
+
+-- Salvar posição (tipo “spawn”)
+PlayerTab:CreateButton({
+   Name = "Salvar Posição",
+   Callback = function()
+      local player = game.Players.LocalPlayer
+      if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+         savedPosition = player.Character.HumanoidRootPart.CFrame
+         
+         Rayfield:Notify({
+            Title = "Posição salva",
+            Content = "Você pode voltar depois",
+            Duration = 3
+         })
+      end
+   end,
+})
+
+-- Voltar para posição salva
+PlayerTab:CreateButton({
+   Name = "Voltar para Posição",
+   Callback = function()
+      local player = game.Players.LocalPlayer
+      if savedPosition and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+         player.Character.HumanoidRootPart.CFrame = savedPosition
+      else
+         Rayfield:Notify({
+            Title = "Erro",
+            Content = "Nenhuma posição salva",
+            Duration = 3
+         })
+      end
+   end,
+})
+
+-- =========================
+-- ABA SKINS
+-- =========================
+local SkinTab = Window:CreateTab("Skins", 4483362458)
+
+-- Input camisa
+SkinTab:CreateInput({
+   Name = "ID Camisa",
+   PlaceholderText = "Ex: 123456",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(Text)
+      local player = game.Players.LocalPlayer
+      local char = player.Character
+      
+      if char then
+         local shirt = char:FindFirstChildOfClass("Shirt") or Instance.new("Shirt", char)
+         shirt.ShirtTemplate = "rbxassetid://" .. Text
+      end
+   end,
+})
+
+-- Input calça
+SkinTab:CreateInput({
+   Name = "ID Calça",
+   PlaceholderText = "Ex: 123456",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(Text)
+      local player = game.Players.LocalPlayer
+      local char = player.Character
+      
+      if char then
+         local pants = char:FindFirstChildOfClass("Pants") or Instance.new("Pants", char)
+         pants.PantsTemplate = "rbxassetid://" .. Text
+      end
+   end,
+})
+
+-- =========================
+-- ABA EXTRA (layout separado)
+-- =========================
+local ExtraTab = Window:CreateTab("Extras", 4483362458)
+
+-- Pulo alto
+ExtraTab:CreateSlider({
+   Name = "Força do Pulo",
+   Range = {50, 200},
+   Increment = 5,
+   Suffix = "Jump",
+   CurrentValue = 50,
+   Callback = function(Value)
+      local player = game.Players.LocalPlayer
+      if player.Character and player.Character:FindFirstChild("Humanoid") then
+         player.Character.Humanoid.JumpPower = Value
+      end
+   end,
+})
+
+-- Notificação
+Rayfield:Notify({
+   Title = "Script carregado!",
+   Content = "Tudo pronto 🚀",
+   Duration = 4
+})
